@@ -1,0 +1,102 @@
+* { font-family: "微软雅黑"; }
+
+/*主界面样式*/
+QWidget#MainWindow,QWidget#SystemSetting,QWidget#PictyreCutDialog,CBaseDialog{
+    border: 1px solid #A5A6A8;
+    border-radius: 4px;
+    background-color: #DAA5FF;
+}
+
+QWidget#page,QWidget#page_2{
+        border: 1px solid #A5A6A8;
+        border-radius:4px;
+}
+
+QWidget#widgetWinTitle, QWidget#widgetWinTitle_2{
+    background-color: #DAA5FF;
+}
+
+QWidget#LoginWidget{
+    background-color: transparent;
+}
+
+QToolTip{
+    border: 1px solid #DAA5FF;
+    border-radius: 2px;
+    background-color: #F1F2F3;
+    font: 14px;
+}
+
+QWidget#widgetBody,QWidget#widgetBody_2,QWidget#widgetFileBoard{
+    background-color:#F1F2F3;
+}
+
+QWidget#widgetUserInfo QLabel{
+    color:#FFFFFF;
+}
+
+QPushButton#btnWinMin,QPushButton#btnWinClose,QWidget#btnWinMenu{
+    border:none;
+    background-color:transparent;
+    min-width:30px;
+    min-height:30px;
+}
+
+QPushButton#btnWinMin_2,QPushButton#btnWinClose_2{
+    border:none;
+    background-color:transparent;
+    min-width:30px;
+    min-height:30px;
+}
+
+QPushButton#btnWinMin:hover,QPushButton#btnWinMenu:hover,QPushButton#btnWinMin_2:hover{
+    padding-top: 2px;
+    border: 1px solid #FFFFFF;
+}
+QPushButton#btnWinClose:hover,QPushButton#btnWinClose_2:hover{
+    padding-top: 2px;
+    background-color: #FF0000;
+}
+
+QPushButton#btnLogin{
+    background-color:#DAA5FF;
+    border-radius: 4px;
+    min-width:50;
+    min-height:30;
+    font:20px;
+    color:"white";
+    font-weight:bold;
+}
+
+QPushButton#btnLogin:hover{
+    padding-top: 2px;
+    background-color:#c066d6;
+    border-radius: 4px;
+    min-width:50;
+    min-height:30;
+    font:20px;
+    color:"white";
+    font-weight:bold;
+}
+
+QPushButton#btnCancel,QPushButton#btnSaveCfg{
+    background-color:#DAA5FF;
+    border-radius: 4px;
+    min-width:50;
+    min-height:30;
+    font:20px;
+    color:"white";
+    font-weight:bold;
+}
+
+QPushButton#btnCancel:hover,QPushButton#btnSaveCfg:hover{
+    padding-top: 2px;
+    background-color:#c066d6;
+    border-radius: 4px;
+    min-width:50;
+    min-height:30;
+    font:20px;
+    color:"white";
+    font-weight:bold;
+}
+
