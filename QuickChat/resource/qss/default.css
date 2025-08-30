@@ -14,10 +14,13 @@ QWidget#page,QWidget#page_2{
 
 QWidget#widgetWinTitle, QWidget#widgetWinTitle_2{
     background-color: #DAA5FF;
+    border-top-left-radius:8px;
+    border-top-right-radius:8px;
 }
 
 QWidget#LoginWidget{
     background-color: transparent;
+    border:none;
 }
 
 QToolTip{

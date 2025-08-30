@@ -15,6 +15,11 @@ public:
     explicit LoginWidget(QWidget *parent = nullptr);
     ~LoginWidget();
 
+private slots:
+    void on_btnWinMenu_clicked();
+
+    void on_btnCancel_clicked();
+
 private:
     Ui::LoginWidget *ui;
 };

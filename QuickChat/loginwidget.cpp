@@ -16,9 +16,27 @@ LoginWidget::LoginWidget(QWidget *parent) :
     //设置样式表
     qApp->setStyleSheet(file.readAll());
     file.close();
+
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 LoginWidget::~LoginWidget()
 {
     delete ui;
+}
+
+void LoginWidget::on_btnWinMenu_clicked()
+{
+    ui->stackedWidget->setStartVal(0);//反转的起始值
+    ui->stackedWidget->setEndVal(180);//反转的结束值
+    //m_asw实现动画效果
+    ui->stackedWidget->animation(1);
+}
+
+void LoginWidget::on_btnCancel_clicked()
+{
+    ui->stackedWidget->setStartVal(0);//反转的起始值
+    ui->stackedWidget->setEndVal(-180);//反转的结束值
+    //m_asw实现动画效果
+    ui->stackedWidget->animation(0);
 }
