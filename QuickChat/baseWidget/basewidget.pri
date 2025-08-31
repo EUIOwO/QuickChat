@@ -6,7 +6,9 @@ DEPENDPATH += $$PWD
 #$$PWD当前目录
 
 HEADERS += \
-    $$PWD/animationstackedwidget.h
+    $$PWD/animationstackedwidget.h\
+    $$PWD/iplineedit.h
 
 SOURCES += \
-    $$PWD/animationstackedwidget.cpp
+    $$PWD/animationstackedwidget.cpp\
+    $$PWD/iplineedit.cpp

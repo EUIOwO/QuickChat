@@ -14,8 +14,6 @@ QWidget#page,QWidget#page_2{
 
 QWidget#widgetWinTitle, QWidget#widgetWinTitle_2{
     background-color: #DAA5FF;
-    border-top-left-radius:8px;
-    border-top-right-radius:8px;
 }
 
 QWidget#LoginWidget{
@@ -50,6 +48,7 @@ QPushButton#btnWinMin_2,QPushButton#btnWinClose_2{
     background-color:transparent;
     min-width:30px;
     min-height:30px;
+
 }
 
 QPushButton#btnWinMin:hover,QPushButton#btnWinMenu:hover,QPushButton#btnWinMin_2:hover{
