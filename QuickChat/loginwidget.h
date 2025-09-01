@@ -20,6 +20,8 @@ private slots:
 
     void on_btnCancel_clicked();
 
+    void on_btnLogin_clicked();
+
 private:
     Ui::LoginWidget *ui;
 };

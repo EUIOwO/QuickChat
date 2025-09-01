@@ -1,5 +1,6 @@
 #include "loginwidget.h"
 #include "ui_loginwidget.h"
+#include "mainwindow.h"
 #include <QFile>
 LoginWidget::LoginWidget(QWidget *parent) :
     QWidget(parent),
@@ -39,4 +40,12 @@ void LoginWidget::on_btnCancel_clicked()
     ui->stackedWidget->setEndVal(-180);//反转的结束值
     //m_asw实现动画效果
     ui->stackedWidget->animation(0);
+}
+
+void LoginWidget::on_btnLogin_clicked()
+{
+    MainWindow *mainwindow = new MainWindow;
+    mainwindow->show();
+
+    this->hide();
 }

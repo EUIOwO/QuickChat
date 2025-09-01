@@ -36,7 +36,7 @@ QWidget#widgetUserInfo QLabel{
     color:#FFFFFF;
 }
 
-QPushButton#btnWinMin,QPushButton#btnWinClose,QWidget#btnWinMenu{
+QPushButton#btnWinMin,QPushButton#btnWinClose,QWidget#btnWinMenu,QWidget#btnButMenu{
     border:none;
     background-color:transparent;
     min-width:30px;
@@ -51,7 +51,7 @@ QPushButton#btnWinMin_2,QPushButton#btnWinClose_2{
 
 }
 
-QPushButton#btnWinMin:hover,QPushButton#btnWinMenu:hover,QPushButton#btnWinMin_2:hover{
+QPushButton#btnWinMin:hover,QPushButton#btnWinMenu:hover,QPushButton#btnWinMin_2:hover,QPushButton#btnButMenu:hover{
     padding-top: 2px;
     border: 1px solid #FFFFFF;
 }
@@ -101,4 +101,13 @@ QPushButton#btnCancel:hover,QPushButton#btnSaveCfg:hover{
     color:"white";
     font-weight:bold;
 }
+
+QToolButton#btnFriend,QToolButton#btnConversation,QToolButton#btnGroup,QToolButton#btnApply{
+    qproperty-toolButtonStyle: "ToolButtonTextUnderIcon";
+}
+
+QLabel#labelUserName,QLabel#labelWeather{
+    qproperty-alignment: AlignCenter;
+}
+
 
