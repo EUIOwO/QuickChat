@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include <QFile>
 LoginWidget::LoginWidget(QWidget *parent) :
-    QWidget(parent),
+    CustomMoveWidget(parent),
     ui(new Ui::LoginWidget)
 {
     ui->setupUi(this);
@@ -19,6 +19,10 @@ LoginWidget::LoginWidget(QWidget *parent) :
     file.close();
 
     ui->stackedWidget->setCurrentIndex(0);
+
+    //给lineEditUser添加图片
+    ui->lineEditUser->SetIcon(QPixmap(":/resource/common/ic_user.png"));
+    ui->lineEditPasswd->SetIcon(QPixmap(":/resource/common/ic_lock.png"));
 }
 
 LoginWidget::~LoginWidget()

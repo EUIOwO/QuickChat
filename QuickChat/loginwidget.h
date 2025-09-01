@@ -1,5 +1,6 @@
 #ifndef LOGINWIDGET_H
 #define LOGINWIDGET_H
+#include "customwidget.h"
 
 #include <QWidget>
 
@@ -7,7 +8,7 @@ namespace Ui {
 class LoginWidget;
 }
 
-class LoginWidget : public QWidget
+class LoginWidget : public CustomMoveWidget
 {
     Q_OBJECT
 

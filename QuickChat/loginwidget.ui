@@ -44,7 +44,7 @@
     <number>0</number>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QWidget" name="widgetWinTitle" native="true">
@@ -295,7 +295,7 @@ border-image: url(:/resource/background/logo.png);</string>
               <height>120</height>
              </size>
             </property>
-            <widget class="QLineEdit" name="lineEditUser">
+            <widget class="QIconLineEdit" name="lineEditUser">
              <property name="geometry">
               <rect>
                <x>13</x>
@@ -311,13 +311,14 @@ border-image: url(:/resource/background/logo.png);</string>
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">image: url(:/resource/images/ic_user.png);</string>
+              <string notr="true">image: url(:/resource/images/ic_user.png);
+</string>
              </property>
              <property name="text">
               <string/>
              </property>
             </widget>
-            <widget class="QLineEdit" name="lineEditPasswd">
+            <widget class="QIconLineEdit" name="lineEditPasswd">
              <property name="geometry">
               <rect>
                <x>13</x>
@@ -333,7 +334,7 @@ border-image: url(:/resource/background/logo.png);</string>
               <string/>
              </property>
             </widget>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>6</x>
@@ -557,7 +558,7 @@ font-weight:bold;</string>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="IPLineEdit" name="lineEditHostAddr"/>
+              <widget class="QIPLineEdit" name="lineEditHostAddr"/>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_2">
@@ -655,9 +656,14 @@ font-weight:bold;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>IPLineEdit</class>
+   <class>QIconLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">iplineedit.h</header>
+   <header location="global">clineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QIPLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">clineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>
