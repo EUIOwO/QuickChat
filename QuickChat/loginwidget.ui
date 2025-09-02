@@ -10,10 +10,16 @@
     <height>450</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>540</width>
+    <height>450</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
     <width>540</width>
-    <height>600</height>
+    <height>450</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -304,14 +310,12 @@ border-image: url(:/resource/background/logo.png);</string>
                <height>25</height>
               </rect>
              </property>
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;用户名&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
              <property name="whatsThis">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">image: url(:/resource/images/ic_user.png);
+              <string notr="true">
+
 </string>
              </property>
              <property name="text">
@@ -328,7 +332,10 @@ border-image: url(:/resource/background/logo.png);</string>
               </rect>
              </property>
              <property name="whatsThis">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;用户密码&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
              <property name="text">
               <string/>

@@ -13,4 +13,5 @@ HEADERS += \
 SOURCES += \
     $$PWD/animationstackedwidget.cpp\
     $$PWD/customwidget.cpp \
-    $$PWD/clineedit.cpp
+    $$PWD/clineedit.cpp \
+

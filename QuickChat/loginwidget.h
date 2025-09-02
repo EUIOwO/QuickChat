@@ -1,6 +1,7 @@
 #ifndef LOGINWIDGET_H
 #define LOGINWIDGET_H
 #include "customwidget.h"
+#include "clientsocket.h"
 
 #include <QWidget>
 
@@ -23,8 +24,14 @@ private slots:
 
     void on_btnLogin_clicked();
 
+    void onSignalMessage(const quint8 &type, const QJsonValue &dataVal);
+
+    void onSignalStatus(const quint8 &state);
+
 private:
     Ui::LoginWidget *ui;
+
+    ClientSocket *m_tcpSocket;
 };
 
 #endif // LOGINWIDGET_H

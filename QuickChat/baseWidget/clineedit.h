@@ -57,6 +57,7 @@ public:
     ~QIconLineEdit();
 
     void SetIcon(const QPixmap &pixmap);
+
 private:
     QLabel *labelPixmap;
 };
