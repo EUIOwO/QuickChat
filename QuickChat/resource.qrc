@@ -27,16 +27,6 @@
         <file>resource/common/ic_user.png</file>
         <file>resource/common/ic_user_add.png</file>
         <file>resource/common/ic_weather.png</file>
-        <file>resource/head/0.bmp</file>
-        <file>resource/head/1.bmp</file>
-        <file>resource/head/2.bmp</file>
-        <file>resource/head/3.bmp</file>
-        <file>resource/head/4.bmp</file>
-        <file>resource/head/5.bmp</file>
-        <file>resource/head/6.bmp</file>
-        <file>resource/head/7.bmp</file>
-        <file>resource/head/8.bmp</file>
-        <file>resource/head/9.bmp</file>
         <file>resource/ico/app.ico</file>
         <file>resource/ico/app.rc</file>
         <file>resource/images/applay.png</file>
@@ -63,11 +53,17 @@
         <file>resource/images/ic_warring.png</file>
         <file>resource/images/ic_zip.png</file>
         <file>resource/images/robot.png</file>
-    </qresource>
-    <qresource prefix="/sound">
-        <file>resource/sound/message.wav</file>
+        <file>resource/head/head-48.png</file>
+        <file>resource/head/head-64.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>
+    </qresource>
+    <qresource prefix="/sound">
+        <file>resource/sound/message.wav</file>
+        <file>resource/sound/msg.wav</file>
+        <file>resource/sound/ringin.wav</file>
+        <file>resource/sound/system.wav</file>
+        <file>resource/sound/userlogon.wav</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QtCore>
 #include <QDebug>
+#include "unit.h"
 
 LoginWidget::LoginWidget(QWidget *parent) :
     CustomMoveWidget(parent),
@@ -87,7 +88,7 @@ void LoginWidget::onSignalStatus(const quint8 &state)
         case 0x01://用户登录成功
             ui->labelWinTitle->setText("已连接服务器");
         break;
-        case 0x03://用户登录成功
+        case LoginSuccess://用户登录成功
         {
             qDebug() << "用户登录成功" << endl;
 
@@ -97,10 +98,10 @@ void LoginWidget::onSignalStatus(const quint8 &state)
             this->hide();
         }
         break;
-        case 0x04://用户未注册
+        case LoginPasswdError://用户未注册
             qDebug() << "用户未注册" << endl;
         break;
-        case 0x13://用户已在线
+        case LoginRepeat://用户已在线
             qDebug() << "用户已在线" << endl;
         break;
     }

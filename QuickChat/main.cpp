@@ -1,18 +1,17 @@
 #include "loginwidget.h"
-#include "mainwindow.h"
-
+#include "databasemagr.h"
 #include <QApplication>
+#include "global.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    DataBaseMagr::Instance()->OpenUserDb("user.db");
+
     LoginWidget w;
+    myHelper::FormInCenter(&w);
     w.show();
     return a.exec();
-
-//    QApplication a(argc, argv);
-//    MainWindow m;
-//    m.show();
-//    return a.exec();
 }
 
