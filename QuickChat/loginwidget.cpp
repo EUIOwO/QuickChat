@@ -65,16 +65,19 @@ void LoginWidget::on_btnCancel_clicked()
 
 void LoginWidget::on_btnLogin_clicked()
 {
+    //检查是否连接到服务器
+    m_tcpSocket->CheckConnected();
+
     //获取输入框的数据
     QString username = ui->lineEditUser->text();
     QString passwd = ui->lineEditPasswd->text();
 
     // 构建 Json 对象
     QJsonObject json;
-    json.insert("username", username);
+    json.insert("name", username);
     json.insert("passwd", passwd);
 
-    m_tcpSocket->SltSendMessage(17, json);
+    m_tcpSocket->SltSendMessage(0x11, json);
 }
 
 void LoginWidget::onSignalMessage(const quint8 &type, const QJsonValue &dataVal)
@@ -85,7 +88,7 @@ void LoginWidget::onSignalMessage(const quint8 &type, const QJsonValue &dataVal)
 void LoginWidget::onSignalStatus(const quint8 &state)
 {
     switch(state){
-        case 0x01://用户登录成功
+        case ConnectedHost://已连接服务器
             ui->labelWinTitle->setText("已连接服务器");
         break;
         case LoginSuccess://用户登录成功

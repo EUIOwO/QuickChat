@@ -123,6 +123,7 @@ void ClientSocket::SltSendMessage(const quint8 &type, const QJsonValue &dataVal)
     QJsonDocument document;
     document.setObject(json);
     m_tcpSocket->write(document.toJson(QJsonDocument::Compact));
+
     qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
 
 
@@ -151,7 +152,7 @@ void ClientSocket::SltConnected()
  * @brief ClientSocket::SltReadyRead
  * 服务器消息处理
  */
-void ClientSocket::SltReadyRead()
+void ClientSocket:: SltReadyRead()
 {
     //读取socket数据
    QByteArray byRead = m_tcpSocket->readAll();
@@ -195,9 +196,11 @@ void ClientSocket::ParseLogin(const QJsonValue &dataVal)
         m_nId = id;
     }else if(code == -1){
         qDebug() << "用户未注册" << endl;
+
         emit signalStatus(LoginPasswdError);
     }else if(code == 0 && msg == "ok"){
         qDebug() << "登录成功" << endl;
+
         emit signalStatus(LoginSuccess);
     }else if(code == 1){
 

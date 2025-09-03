@@ -25,20 +25,20 @@ QString MyApp::m_strIniFile         = "config.ini";
 
 #if 0
 // 服务器相关配置
-QString MyApp::m_strHostAddr        = "192.168.2.104";
+QString MyApp::m_strHostAddr        = "192.168.2.105";
 int     MyApp::m_nMsgPort           = 32101;
 int     MyApp::m_nFilePort          = 32102;
 int     MyApp::m_nGroupPort         = 32103;
 #else
 // 服务器相关配置
-QString MyApp::m_strHostAddr        = "192.168.2.104";
+QString MyApp::m_strHostAddr        = "192.168.164.1";
 int     MyApp::m_nMsgPort           = 60100;
 int     MyApp::m_nFilePort          = 60101;
 int     MyApp::m_nGroupPort         = 60102;
 #endif
 
 QString MyApp::m_strUserName        = "tongshun";
-QString MyApp::m_strPassword        = "tongshun";
+QString MyApp::m_strPassword        = "1234";
 QString MyApp::m_strHeadFile        = ":/resource/head/head-64.png";
 
 int     MyApp::m_nId                = -1;
@@ -110,12 +110,12 @@ void MyApp::ReadSettingFile()
     QSettings settings(m_strIniFile, QSettings::IniFormat);
     settings.beginGroup("UserCfg");
     m_strUserName = settings.value("User", "tongshun").toString();
-    m_strPassword = settings.value("Passwd", "tongshun")  .toString();
+    m_strPassword = settings.value("Passwd", "1234")  .toString();
     settings.endGroup();
 
 
     settings.beginGroup("Server");
-    m_strHostAddr = settings.value("HostAddr", "192.168.2.104").toString();
+    m_strHostAddr = settings.value("HostAddr", "192.168.164.1").toString();
     m_nMsgPort    = settings.value("MsgPort", 60100)  .toInt();
     m_nFilePort   = settings.value("FilePort", 60102)  .toInt();
     m_nGroupPort  = settings.value("GroupPort", 60103)  .toInt();
