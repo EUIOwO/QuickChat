@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include "customwidget.h"
 #include <QMainWindow>
+#include <QButtonGroup>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,7 +16,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void SltMainPageChanged(int index);
+
 private:
     Ui::MainWindow *ui;
+
+    QButtonGroup *m_btnGroup;
 };
 #endif // MAINWINDOW_H

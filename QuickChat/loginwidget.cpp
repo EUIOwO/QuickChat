@@ -32,6 +32,7 @@ LoginWidget::LoginWidget(QWidget *parent) :
 
     ui->lineEditUser->setPlaceholderText("用户名");
     ui->lineEditPasswd->setPlaceholderText("密码");
+    ui->lineEditPasswd->setEchoMode(QLineEdit::Password);
 
     m_tcpSocket = new ClientSocket;
     connect(m_tcpSocket,&ClientSocket::signalMessage, this, &LoginWidget::onSignalMessage);

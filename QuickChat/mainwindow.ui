@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>822</height>
+    <height>787</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <widget class="QStackedWidget" name="GCStackedWidget">
+   <widget class="ChatStackedWidget" name="GCStackedWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -38,7 +38,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QWidget" name="convationListwidget" native="true">
@@ -857,6 +857,14 @@ QPushButton#pushButton:hover{
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ChatStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header location="global">chatstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resource.qrc"/>
  </resources>
