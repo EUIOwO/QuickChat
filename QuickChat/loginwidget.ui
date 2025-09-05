@@ -314,12 +314,10 @@ border-image: url(:/resource/background/logo.png);</string>
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">
-
-</string>
+              <string notr="true"/>
              </property>
              <property name="text">
-              <string/>
+              <string>tongshun</string>
              </property>
             </widget>
             <widget class="QIconLineEdit" name="lineEditPasswd">
@@ -338,7 +336,7 @@ border-image: url(:/resource/background/logo.png);</string>
               <string notr="true"/>
              </property>
              <property name="text">
-              <string/>
+              <string>1234</string>
              </property>
             </widget>
             <widget class="QWidget" name="layoutWidget">
@@ -659,7 +657,7 @@ font-weight:bold;</string>
   <customwidget>
    <class>AnimationStackedWidget</class>
    <extends>QStackedWidget</extends>
-   <header location="global">animationstackedwidget.h</header>
+   <header>animationstackedwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

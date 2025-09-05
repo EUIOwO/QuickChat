@@ -28,6 +28,10 @@ private slots:
 
     void onSignalStatus(const quint8 &state);
 
+    void on_btnWinClose_clicked();
+
+    void on_btnWinMin_clicked();
+
 private:
     Ui::LoginWidget *ui;
 

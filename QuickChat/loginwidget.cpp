@@ -94,9 +94,13 @@ void LoginWidget::onSignalStatus(const quint8 &state)
         break;
         case LoginSuccess://用户登录成功
         {
+            disconnect(m_tcpSocket,&ClientSocket::signalMessage, this, &LoginWidget::onSignalMessage);
+            disconnect(m_tcpSocket,&ClientSocket::signalStatus, this, &LoginWidget::onSignalStatus);//登陆成功后，销毁loginwidget的连接
+
             qDebug() << "用户登录成功" << endl;
 
             MainWindow *mainWindow = new MainWindow;
+            mainWindow->SetSocket(m_tcpSocket, ui->lineEditUser->text());
             mainWindow->show();
 
             this->hide();
@@ -109,4 +113,15 @@ void LoginWidget::onSignalStatus(const quint8 &state)
             qDebug() << "用户已在线" << endl;
         break;
     }
+}
+
+void LoginWidget::on_btnWinClose_clicked()
+{
+    delete ui;
+    qApp->quit();
+}
+
+void LoginWidget::on_btnWinMin_clicked()
+{
+    this->hide();
 }
