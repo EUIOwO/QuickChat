@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QButtonGroup>
 #include <QSystemTrayIcon>
-#include <QSystemTrayIcon>
+#include <QtCore>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,6 +38,13 @@ private slots:
 
     void on_btnWinClose_clicked();
 
+    void on_btnWinMin_clicked();
+
+    // 右键菜单
+    void onAddFriendMenuDidSelected(QAction *action);
+    //void onGroupPopMenuDidSelected(QAction *action);
+    //void onChildPopMenuDidSelected(QAction *action);
+
 private:
     Ui::MainWindow *ui;
 
@@ -48,5 +55,9 @@ private:
     QSystemTrayIcon *systemTrayIcon;
 
     void InitSysTrayIcon();
+    void InitQQListMenu();
+
+    void PraseAddFriendReply(const QJsonValue dataVal);
+    void PraseAddFriendRequistReply(const QJsonValue dataVal);
 };
 #endif // MAINWINDOW_H

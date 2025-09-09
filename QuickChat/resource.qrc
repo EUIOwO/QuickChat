@@ -55,6 +55,16 @@
         <file>resource/images/robot.png</file>
         <file>resource/head/head-48.png</file>
         <file>resource/head/head-64.png</file>
+        <file>resource/head/0.bmp</file>
+        <file>resource/head/1.bmp</file>
+        <file>resource/head/2.bmp</file>
+        <file>resource/head/3.bmp</file>
+        <file>resource/head/4.bmp</file>
+        <file>resource/head/5.bmp</file>
+        <file>resource/head/6.bmp</file>
+        <file>resource/head/7.bmp</file>
+        <file>resource/head/8.bmp</file>
+        <file>resource/head/9.bmp</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

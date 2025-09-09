@@ -33,6 +33,9 @@ public:
         return self;
     }
 
+    bool isMyFriend(const int &userId, const QString &name);
+    QJsonArray GetMyFriend(const int &userId);
+    void AddFriend(const int &friendId, const int userId, const QString &name);
 
 signals:
 

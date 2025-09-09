@@ -178,6 +178,12 @@ void ClientSocket:: SltReadyRead()
                    //登录
                    ParseLogin(dataVal);
                break;
+               case AddFriend:
+                   emit signalMessage(AddFriend, dataVal);
+               break;
+               case AddFriendRequist:
+                   emit signalMessage(AddFriendRequist, dataVal);
+               break;
            }
        }
    }
@@ -199,6 +205,9 @@ void ClientSocket::ParseLogin(const QJsonValue &dataVal)
 
         emit signalStatus(LoginPasswdError);
     }else if(code == 0 && msg == "ok"){
+        m_nId = id;
+        MyApp::m_nId = id;
+
         qDebug() << "登录成功" << endl;
 
         emit signalStatus(LoginSuccess);
