@@ -1,5 +1,7 @@
 #include "databasemagr.h"
 #include <QtCore>
+#include "iteminfo.h"
+#include "unit.h"
 
 #include <QDebug>
 
@@ -92,3 +94,95 @@ void DataBaseMagr::AddFriend(const int &friendId, const int userId, const QStrin
 
     query.exec();
 }
+
+//打开消息历史记录数据库
+bool DataBaseMagr::OpenMessageDb(const QString &dataName)
+{
+    msgdb = QSqlDatabase::addDatabase("QSQLITE", "connectionMsg");
+    msgdb.setDatabaseName(dataName);
+    if (!msgdb.open()) {
+        qDebug() << "Open sql failed";
+        return false;
+    }
+
+    // 添加数据表
+    QSqlQuery query(msgdb);
+    // 创建历史聊天表
+    query.exec("CREATE TABLE MSGINFO (id INT PRIMARY KEY, userId INT, name varchar(20),"
+               "head varchar(50), datetime varchar(20), filesize varchar(30),"
+               "content varchar(500), type INT, direction INT)");
+
+    return true;
+}
+
+/**
+ * @brief DataBaseMagr::QueryHistory
+ * 查询指定用户的历史记录
+ * @param id
+ */
+QVector<ItemInfo*> DataBaseMagr::QueryHistory(const int &id, const int &count)
+{
+    QString strQuery = "SELECT * FROM MSGINFO ";
+    strQuery.append("WHERE userId=");
+    strQuery.append(QString::number(id));
+    strQuery.append(" ORDER BY id ASC ");
+    // 查询前10条
+    if (0 != count)
+    {
+        strQuery.append(" LIMIT ");
+        strQuery.append(QString::number(count));
+    }
+    strQuery.append(";");
+
+    QVector<ItemInfo*> items;
+
+    QSqlQuery query(strQuery, msgdb);
+    while (query.next()) {
+        // 查看历史记录
+        items.push_front(new ItemInfo(
+                             query.value(2).toString(),
+                             query.value(4).toString(),
+                             query.value(3).toString(),
+                             query.value(5).toString(),
+                             query.value(6).toString(),
+                             query.value(7).toInt(),
+                             query.value(8).toInt())
+                         );
+    }
+
+    return items;
+}
+
+/**
+ * @brief DataBaseMagr::AddHistoryMsg
+ * 添加历史记录
+ * @param userId
+ * @param itemInfo
+ */
+void DataBaseMagr::AddHistoryMsg(const int &userId, ItemInfo *itemInfo)
+{
+    // 查询数据库
+    QSqlQuery query("SELECT [id] FROM MSGINFO ORDER BY id DESC;", msgdb);
+    int nId = 0;
+    // 查询最高ID
+    if (query.next()) {
+        nId = query.value(0).toInt();
+    }
+
+    // 根据新ID重新创建用户
+    query.prepare("INSERT INTO MSGINFO (id, userId, name, head, datetime, filesize, content, type, direction) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+
+    query.bindValue(0, nId + 1);
+    query.bindValue(1, userId);
+    query.bindValue(2, itemInfo->GetName());
+    query.bindValue(3, itemInfo->GetStrPixmap());
+    query.bindValue(4, itemInfo->GetDatetime());
+    query.bindValue(5, itemInfo->GetText());
+    query.bindValue(6, itemInfo->GetFileSizeString());
+    query.bindValue(7, itemInfo->GetOrientation());
+    query.bindValue(8, itemInfo->GetMsgType());
+
+    query.exec();
+}
+

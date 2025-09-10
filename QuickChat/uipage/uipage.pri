@@ -6,16 +6,11 @@ DEPENDPATH += $$PWD
 #$$PWD当前目录
 
 HEADERS += \
-    $$PWD/global.h \
-    $$PWD/myapp.h \
-    $$PWD/qqcell.h \
-    $$PWD/unit.h \
-    $$PWD/iteminfo.h
-
+    $$PWD/chatwindow.h \
 
 SOURCES += \
-    $$PWD/myapp.cpp \
-    $$PWD/qqcell.cpp \
-    $$PWD/iteminfo.cpp
+    $$PWD/chatwindow.cpp \
 
+FORMS += \
+    $$PWD/chatwindow.ui \
 

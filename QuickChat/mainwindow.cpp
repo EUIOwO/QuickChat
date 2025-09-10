@@ -5,6 +5,7 @@
 #include "databasemagr.h"
 #include "myapp.h"
 #include "clientsocket.h"
+#include "chatwindow.h"
 #include "unit.h"
 #include <QMenu>
 #include <QtCore>
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     InitQQListMenu();
     InitSysTrayIcon();
+
 
 }
 
@@ -226,7 +228,7 @@ void MainWindow::onAddFriendMenuDidSelected(QAction *action)
             json.insert("id", m_tcpSocket->GetUserId());
             json.insert("name", text);
 
-            //m_tcpSocket->SltSendMessage(AddFriend, json);
+            m_tcpSocket->SltSendMessage(AddFriend, json);
         }
     }
     else if (!action->text().compare(tr("刷新")))
@@ -308,8 +310,33 @@ void MainWindow::SltTcpStatus(const quint8 &state)
 
 }
 
+//关闭与好友聊天的窗口
+void MainWindow::SltFriendChatWindowClose()
+{
+
+}
+
 void MainWindow::on_btnWinMin_clicked()
 {
-     this->hide();
+    this->hide();
+}
+
+//好友点击
+void MainWindow::SltFriendsClicked(QQCell* cell)
+{
+    qDebug() << "双击" << endl;
+    ChatWindow *chatWindow = new ChatWindow();
+    connect(chatWindow, &ChatWindow::signalSendMessage, m_tcpSocket, &ClientSocket::SltSendMessage);
+    connect(chatWindow, &ChatWindow::signalClose, this, &MainWindow::SltFriendChatWindowClose);
+
+    //设置窗口属性
+    chatWindow->SetCell(cell);
+    chatWindow->show();
+}
+
+//群组点击
+void MainWindow::SltGroupsClicked(QQCell* cell)
+{
+
 }
 

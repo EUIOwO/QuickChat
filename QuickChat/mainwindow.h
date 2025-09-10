@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include "customwidget.h"
 #include "clientsocket.h"
+#include "qqcell.h"
 #include <QMainWindow>
 #include <QButtonGroup>
 #include <QSystemTrayIcon>
@@ -31,19 +32,25 @@ private slots:
     //程序退出处理
     void SltQuitAPP();
 
-    //QTcpSocket信号要关联的槽函数
-    void SltTcpReply(const quint8 &type, const QJsonValue &dataVal);
-
-    void SltTcpStatus(const quint8 &state);
-
     void on_btnWinClose_clicked();
 
     void on_btnWinMin_clicked();
+
+    //好友点击
+    void SltFriendsClicked(QQCell* );
+    //群组点击
+    void SltGroupsClicked(QQCell* );
 
     // 右键菜单
     void onAddFriendMenuDidSelected(QAction *action);
     //void onGroupPopMenuDidSelected(QAction *action);
     //void onChildPopMenuDidSelected(QAction *action);
+
+    //QTcpSocket信号要关联的槽函数
+    void SltTcpReply(const quint8 &type, const QJsonValue &dataVal);
+    void SltTcpStatus(const quint8 &state);
+
+    void SltFriendChatWindowClose();
 
 private:
     Ui::MainWindow *ui;
