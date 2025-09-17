@@ -95,6 +95,8 @@ void ClientSocket::ConnectToHost(const QHostAddress &host, const int &port)
     m_tcpSocket->connectToHost(host, port);
 }
 
+
+
 /**
  * @brief ClientSocket::SltSendMessage
  * tcp socket消息管理
@@ -211,7 +213,5 @@ void ClientSocket::ParseLogin(const QJsonValue &dataVal)
         qDebug() << "登录成功" << endl;
 
         emit signalStatus(LoginSuccess);
-    }else if(code == 1){
-
     }
 }

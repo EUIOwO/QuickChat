@@ -186,3 +186,56 @@ void DataBaseMagr::AddHistoryMsg(const int &userId, ItemInfo *itemInfo)
     query.exec();
 }
 
+//添加群组时判断我是否已在该群组
+bool DataBaseMagr::isInGroup(const QString &name){
+    QString strQuery = "SELECT [id] FROM MYGROUP";
+    strQuery.append("WHERE name=");
+    strQuery.append(name);
+    strQuery.append("';");
+
+    QSqlQuery query(strQuery, userdb);
+    return query.next();
+}
+
+//用户添加群组
+void DataBaseMagr::AddGroup(const int &id, const int &userid, const QString &name){
+    QString strQuery = "selete [id] FROM MYGROUP";
+    strQuery.append(" WHERE id=");
+    strQuery.append(QString::number(id));
+    strQuery.append(" AND userId=");
+    strQuery.append(QString::number(userid));
+
+    QSqlQuery query(strQuery, userdb);
+    if(query.next()){
+        //查询到该用户，不添加
+        qDebug() << "yes" << query.value(0).toString();
+        return;
+    }
+
+    //根据新id重新创建用户
+    query.prepare("INSERT INTO MYGROUP(id, userid, name) "
+                  "VALUES (?,?,?)");
+    query.bindValue(0, id);
+    query.bindValue(1, userid);
+    query.bindValue(2, name);
+
+    query.exec();
+}
+//获取我所在的群组
+QJsonArray DataBaseMagr::GetMyGroup(const int &userId) const
+{
+    QJsonArray myGroup;
+
+    QString strQuery = "SELETE [id], [name] FROM MYGROUP";
+    strQuery.append(" WHERE userId=");
+    strQuery.append(QString::number(userId));
+
+    QSqlQuery query(strQuery, userdb);
+    while(query.next()){
+        QJsonObject jsonObj;
+        jsonObj.insert("id", query.value(0).toInt());
+        jsonObj.insert("name", query.value(1).toString());
+        myGroup.append(jsonObj);
+    }
+    return myGroup;
+}

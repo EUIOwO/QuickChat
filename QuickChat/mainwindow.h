@@ -3,6 +3,7 @@
 #include "customwidget.h"
 #include "clientsocket.h"
 #include "qqcell.h"
+#include "chatwindow.h"
 #include <QMainWindow>
 #include <QButtonGroup>
 #include <QSystemTrayIcon>
@@ -43,8 +44,8 @@ private slots:
 
     // 右键菜单
     void onAddFriendMenuDidSelected(QAction *action);
-    //void onGroupPopMenuDidSelected(QAction *action);
-    //void onChildPopMenuDidSelected(QAction *action);
+    void onGroupPopMenuDidSelected(QAction *action);
+    void onChildPopMenuDidSelected(QAction *action);
 
     //QTcpSocket信号要关联的槽函数
     void SltTcpReply(const quint8 &type, const QJsonValue &dataVal);
@@ -61,10 +62,22 @@ private:
 
     QSystemTrayIcon *systemTrayIcon;
 
+    //聊天窗管理
+    QList<ChatWindow* >m_chatGroupWindows;
+
     void InitSysTrayIcon();
     void InitQQListMenu();
 
     void PraseAddFriendReply(const QJsonValue dataVal);
     void PraseAddFriendRequistReply(const QJsonValue dataVal);
+    void PraseAddGroupReply(const QJsonValue &dataVal);
+    void PraseAddGroupRequest(const QJsonValue &dataVal);
+    void PraseCreatGroupReply(const QJsonValue &dataVal);
+    void PraseGetGroupFriendsReply(const QJsonValue &dataVal);
+    void ParseRefreshGroupFriendsReply(const QJsonValue &dataVal);
+    void ParseGroupMessageReply(const QJsonValue &dataVal);
+    void AddMyGroups(const QJsonValue &dataVal);
+
+    QString GetHeadPixmap(const QString &name);
 };
 #endif // MAINWINDOW_H

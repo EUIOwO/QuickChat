@@ -7,6 +7,8 @@
 #include <QMutex>
 #include "iteminfo.h"
 
+class ItemInfo;
+
 /// 客户端数据库管理类
 class DataBaseMagr : public QObject
 {
@@ -45,6 +47,14 @@ public:
     void AddHistoryMsg(const int &userId, ItemInfo *itemInfo);
     //打开消息数据库
     bool OpenMessageDb(const QString &dataName);
+
+    //判断是否已经加入该群组
+    bool isInGroup(const QString &name);
+
+    //添加群组
+    void AddGroup(const int &id, const int &userid, const QString &name);
+
+    QJsonArray GetMyGroup(const int &userId) const;
 
 signals:
 

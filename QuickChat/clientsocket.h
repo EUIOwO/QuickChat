@@ -23,6 +23,10 @@ public:
     // 连接服务器
     void ConnectToHost(const QString &host, const int &port);
     void ConnectToHost(const QHostAddress &host, const int &port);
+
+
+
+
 signals:
     void signalMessage(const quint8 &type, const QJsonValue &dataVal);
     void signalStatus(const quint8 &state);
@@ -40,6 +44,7 @@ private slots:
     void SltConnected();
     // tcp消息处理
     void SltReadyRead();
+
 
 private:
     void ParseLogin(const QJsonValue &dataVal);

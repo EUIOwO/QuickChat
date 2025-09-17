@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+ #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "chatstackedwidget.h"
 #include "qqcell.h"
@@ -152,6 +152,251 @@ void MainWindow::InitQQListMenu()
     connect(ui->groupListWidget, SIGNAL(onChildDidDoubleClicked(QQCell*)), this, SLOT(SltGroupsClicked(QQCell*)));
 }
 
+void MainWindow::SetSocket(ClientSocket *tcpSocket, const QString &name)
+{
+    if(tcpSocket != NULL){
+        m_tcpSocket = tcpSocket;
+
+        connect(m_tcpSocket,&ClientSocket::signalMessage, this, &MainWindow::SltTcpReply);
+        connect(m_tcpSocket,&ClientSocket::signalStatus, this, &MainWindow::SltTcpStatus);
+
+        ui->labelUserName->setText(name);
+
+        //添加到我的群组
+        AddMyGroups(DataBaseMagr::Instance()->GetMyGroup(MyApp::m_nId));
+    }
+}
+
+/**
+ * @brief MainWindow::onAddFriendMenuDidSelected
+ * 添加好友
+ * @param action
+ */
+void MainWindow::onAddFriendMenuDidSelected(QAction *action)
+{
+    if (!action->text().compare(tr("添加好友")))
+    {
+        QString text = CInputDialog::GetInputText(this, "milo");
+
+        if (!text.isEmpty()) {
+             //首先判断该用户是否已经是我的好友了
+            if (DataBaseMagr::Instance()->isMyFriend(MyApp::m_nId, text)) {
+                CMessageBox::Infomation(this, "该用户已经是你的好友了！");
+                return;
+            }
+
+            // 构建 Json 对象
+            QJsonObject json;
+            json.insert("id", m_tcpSocket->GetUserId());
+            json.insert("name", text);
+
+            m_tcpSocket->SltSendMessage(AddFriend, json);
+        }
+    }
+    else if (!action->text().compare(tr("刷新")))
+    {
+        // 上线的时候获取当前好友的状态
+        QJsonArray friendArr = DataBaseMagr::Instance()->GetMyFriend(MyApp::m_nId);
+
+        // 组织Jsonarror
+        m_tcpSocket->SltSendMessage(RefreshFriends, friendArr);
+    }
+    else if (!action->text().compare(tr("删除该组")))
+    {
+        qDebug() << "delete group";
+    }
+}
+
+//创建群组
+void MainWindow::onGroupPopMenuDidSelected(QAction *action)
+{
+    if(!action->text().compare(tr("创建讨论组"))){
+            QString text = CInputDialog::GetInputText(this, "我的朋友们");
+            if(!text.isEmpty()){
+                //构建Json对象;
+                QJsonObject json;
+                json.insert("id", m_tcpSocket->GetUserId());
+                json.insert("name", text);
+
+                m_tcpSocket->SltSendMessage(CreateGroup,json);
+            }
+    }else if(!action->text().compare(tr("加入讨论组"))){
+        QString text = CInputDialog::GetInputText(this, "我的朋友们");
+        if(!text.isEmpty()){
+            //首先判断是否已经加入过该群组
+            if(DataBaseMagr::Instance()->isInGroup(text)){
+                CMessageBox::Infomation(this,"你已经添加该群组了！");
+                return;
+            }
+            //构建json对象
+            QJsonObject json;
+            json.insert("id", MyApp::m_nId);
+            json.insert("name", text);
+
+            m_tcpSocket->SltSendMessage(AddGroup, json);
+        }
+    }else if(!action->text().compare(tr("删除该组"))){
+        qDebug() << "delete group" << endl;
+    }
+}
+
+void MainWindow::onChildPopMenuDidSelected(QAction *action)
+{
+    QQCell *cell = ui->friendListwidget->GetRightClickedCell();
+    if(NULL == cell) return;
+
+    if(!action->text().compare(tr("发送即时消息"))){
+        qDebug() << "send message" << cell->name;
+        //打开对话框
+        SltFriendsClicked(cell);
+    }else if(!action->text().compare(tr("移动至黑名单"))){
+        qDebug() << "black friend list" << endl;
+    }else if(!action->text().compare(tr("删除联系人"))){
+        qDebug() << "delete my friend" << endl;
+    }
+}
+
+
+//托盘菜单
+void MainWindow::SltTrayIcoClicked(QSystemTrayIcon::ActivationReason reason){
+    switch(reason){
+        case QSystemTrayIcon::DoubleClick:{ //双击
+            if(!this->isVisible()){ //当面板没有被显示，show被调用
+                this->show();
+            }
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+//托盘菜单
+void MainWindow::SltTrayIconMenuClicked(QAction *action){
+    if("退出" == action->text()){
+        this->hide();
+        QTimer::singleShot(500, this, SLOT(SltQuitAPP()));
+    }else if("显示主面板" == action->text()){
+        this->show();
+    }else if(!QString::compare("我在线上", action->text())){
+        m_tcpSocket->CheckConnected();
+
+    }else if(!QString::compare("离线", action->text())){
+        m_tcpSocket->ColseConnected();
+    }
+}
+
+void MainWindow::SltQuitAPP()
+{
+    delete ui;
+    qApp->quit();
+}
+
+void MainWindow::SltTcpStatus(const quint8 &state)
+{
+
+}
+
+//关闭与好友聊天的窗口
+void MainWindow::SltFriendChatWindowClose()
+{
+
+}
+
+void MainWindow::on_btnWinMin_clicked()
+{
+    this->hide();
+}
+
+//好友点击
+void MainWindow::SltFriendsClicked(QQCell* cell)
+{
+    qDebug() << "双击" << endl;
+    ChatWindow *chatWindow = new ChatWindow();
+    connect(chatWindow, &ChatWindow::signalSendMessage, m_tcpSocket, &ClientSocket::SltSendMessage);
+    connect(chatWindow, &ChatWindow::signalClose, this, &MainWindow::SltFriendChatWindowClose);
+
+    //设置窗口属性
+    chatWindow->SetCell(cell);
+    chatWindow->show();
+}
+
+//群组点击
+void MainWindow::SltGroupsClicked(QQCell* cell)
+{
+    //构建json对象
+    QJsonObject json;
+    json.insert("id", cell->id);
+    json.insert("name", cell->name);
+
+    m_tcpSocket->SltSendMessage(GetMyGroups, json);
+
+    //判断该用户是否有聊天窗口，如果有弹出窗口
+    foreach(ChatWindow *window, m_chatGroupWindows){
+        if(window->GetUserId() == cell->id){
+            window->show();
+            return;
+        }
+    }
+
+    //没有检索到聊天窗口，直接弹出新窗口
+    ChatWindow *chatWindow = new ChatWindow();
+    connect(chatWindow, SIGNAL(signalSendMessage(quint8, QJsonValue)), m_tcpSocket, SLOT(SltSendMessage(quint8,QJsonValue)));
+    connect(chatWindow, SIGNAL(signalClose()), this, SLOT(SltGroupChatWindowClose()));
+
+    chatWindow->SetCell(cell, 1);
+    chatWindow->show();
+
+    //添加到当前聊天框
+    m_chatGroupWindows.append(chatWindow);
+
+}
+
+void MainWindow::SltTcpReply(const quint8 &type, const QJsonValue &dataVal)
+{
+
+        qDebug() << "=== Received TCP Response ===";
+        qDebug() << "Type:" << type;
+        qDebug() << "Data:" << dataVal;
+        qDebug() << "============================";
+
+    switch (type) {
+        case AddFriend:{ //服务器返回主动添加好友的用户消息
+            PraseAddFriendReply(dataVal);
+        }
+        break;
+    case AddFriendRequist:{//服务器返回主动添加好友的用户消息
+            PraseAddFriendRequistReply(dataVal);
+        }
+        break;
+        case AddGroup:{
+            PraseAddGroupReply(dataVal);
+        }
+        break;
+        case AddGroupRequist:{
+            PraseAddGroupRequest(dataVal);
+        }
+        break;
+        case CreateGroup:{
+            qDebug() << "处理了这个函数";
+            PraseCreatGroupReply(dataVal);
+        }
+        break;
+        case GetMyGroups:{
+            PraseGetGroupFriendsReply(dataVal);
+        }
+        break;
+        case RefreshGroups:{
+            ParseRefreshGroupFriendsReply(dataVal);
+        }
+            break;
+        case SendGroupMsg:{
+            ParseGroupMessageReply(dataVal);
+        }
+            break;
+    }
+}
+
 //服务器返回 主动添加好友的用户 的消息
 void MainWindow::PraseAddFriendReply(const QJsonValue dataVal)
 {
@@ -205,138 +450,182 @@ void MainWindow::PraseAddFriendRequistReply(const QJsonValue dataVal)
    }
 }
 
-/**
- * @brief MainWindow::onAddFriendMenuDidSelected
- * 添加好友
- * @param action
- */
-void MainWindow::onAddFriendMenuDidSelected(QAction *action)
+void MainWindow::PraseAddGroupReply(const QJsonValue &dataVal)
 {
-    if (!action->text().compare(tr("添加好友")))
-    {
-        QString text = CInputDialog::GetInputText(this, "milo");
+    if(dataVal.isObject()){
+        QJsonObject jsonObj = dataVal.toObject();
+        int nId = jsonObj.value("id").toInt();
+        if(-1 == nId){
+            CMessageBox::Infomation(this, "未找到该群组");
+            return;
+        }
+        QQCell *cell = new QQCell;
+        cell->groupName = QString(tr("我的群组"));
+        cell->iconPath  = GetHeadPixmap(jsonObj.value("head").toString());
+        cell->type      = QQCellType_Child;
+        cell->name      = jsonObj.value("name").toString();
+        cell->subTitle  = QString("我的群，我做主...");
+        cell->id        = nId;
+        cell->status    = OnLine;
 
-        if (!text.isEmpty()) {
-             //首先判断该用户是否已经是我的好友了
-            if (DataBaseMagr::Instance()->isMyFriend(MyApp::m_nId, text)) {
-                CMessageBox::Infomation(this, "该用户已经是你的好友了！");
+        ui->groupListWidget->insertQQCell(cell);
+
+        //更新至数据库
+        DataBaseMagr::Instance()->AddGroup(nId, MyApp::m_nId, cell->name);
+
+    }
+}
+
+//有人加入了你的群组
+void MainWindow::PraseAddGroupRequest(const QJsonValue &dataVal)
+{
+    if(!dataVal.isObject()) return;
+}
+
+void MainWindow::PraseCreatGroupReply(const QJsonValue &dataVal)
+{
+    if(dataVal.isObject()){
+        QJsonObject dataObj = dataVal.toObject();
+        int nId = dataObj.value("id").toInt();
+
+        //qDebug() << "Create group response - ID:" << nId << "Name:" << dataObj.value("name").toString();
+        //为查询到该用户
+        if(-1 == nId){
+            CMessageBox::Infomation(this, "该群组已添加");
+            return;
+        }
+        QQCell *cell = new QQCell;
+        cell->groupName = QString(tr("我的群组"));
+        cell->iconPath  = GetHeadPixmap(dataObj.value("head").toString());
+        cell->type      = QQCellType_Child;
+        cell->name      = dataObj.value("name").toString();
+        cell->subTitle  = QString("我的群，我做主...");
+        cell->id        = nId;
+        cell->status    = OnLine;
+
+        ui->groupListWidget->insertQQCell(cell);
+
+        //更新至数据库
+        DataBaseMagr::Instance()->AddGroup(cell->id, MyApp::m_nId, cell->name);
+
+    }else{
+        //qDebug() << "Invalid response format for CreateGroup";
+    }
+}
+
+void MainWindow::PraseGetGroupFriendsReply(const QJsonValue &dataVal)
+{
+    //data的value时数组
+    if(dataVal.isArray()){
+        QJsonArray array = dataVal.toArray();
+        int nGroupId = array.at(0).toInt();
+
+        //将数据更新至界面
+        //判断与该用户是否有聊天窗口，如果有弹出窗口
+        foreach(ChatWindow *window, m_chatGroupWindows){
+            if(window->GetUserId() == nGroupId){
+                window->UpdateUserStatus(dataVal);
+                window->show();
                 return;
             }
-
-            // 构建 Json 对象
-            QJsonObject json;
-            json.insert("id", m_tcpSocket->GetUserId());
-            json.insert("name", text);
-
-            m_tcpSocket->SltSendMessage(AddFriend, json);
         }
-    }
-    else if (!action->text().compare(tr("刷新")))
-    {
-        // 上线的时候获取当前好友的状态
-        QJsonArray friendArr = DataBaseMagr::Instance()->GetMyFriend(MyApp::m_nId);
-
-        // 组织Jsonarror
-        m_tcpSocket->SltSendMessage(RefreshFriends, friendArr);
-    }
-    else if (!action->text().compare(tr("删除该组")))
-    {
-        qDebug() << "delete group";
     }
 }
 
+void MainWindow::ParseRefreshGroupFriendsReply(const QJsonValue &dataVal)
+{
+    //data的value是数组
+    if(dataVal.isArray()){
+        QJsonArray array = dataVal.toArray();
+        int nSize = array.size();
+        for(int i = 0; i < nSize; i++){
+//            QJsonObject jsonObj = array.at(i).toObject();
+//            int nId = jsonObj.value("status").toInt();
+//            QList<QQCell *> friends = ui->groupListWidget->getCells();
+//            foreach(QQCell *cell, friends.at(0)->childs){
+//                if(cell->id == nId){
+//                    cell->SetSubtitle(QString("当前用户状态:%1").arg(OnLine == nStatus ? tr("在线"):tr("离线")));
+//                }
+//            }
+//            ui->groupListWidget->upload();
+        }
+    }
+}
 
-//托盘菜单
-void MainWindow::SltTrayIcoClicked(QSystemTrayIcon::ActivationReason reason){
-    switch(reason){
-        case QSystemTrayIcon::DoubleClick:{ //双击
-            if(!this->isVisible()){ //当面板没有被显示，show被调用
-                this->show();
+void MainWindow::ParseGroupMessageReply(const QJsonValue &dataVal)
+{
+    //消息格式为object对象
+    if(dataVal.isObject()){
+        QJsonObject dataObj = dataVal.toObject();
+        int nId = dataObj.value("group").toInt();
+
+        //如果收到消息时有聊天窗口存在，直接添加到聊天记录，并弹出窗口
+        foreach(ChatWindow *window, m_chatGroupWindows){
+            if(window->GetUserId() == nId){
+                window->AddMessage(dataVal);
+                window->show();
+                return;
             }
         }
-        break;
-    default:
-        break;
+
+        //没有检索到聊天窗口，直接弹出新窗口
+        QList<QQCell *> groups = ui->groupListWidget->getCells();
+        foreach(QQCell *cell, groups.at(0)->childs){
+            //有列表的才创建
+            if(cell->id == nId){
+                ChatWindow *chatWindow = new ChatWindow();
+                connect(chatWindow, SIGNAL(signalSendMessage(quint8, QJsonValue)), m_tcpSocket, SLOT(SltMessage(quint8, QJsonValue)));
+                connect(chatWindow, SIGNAL(signalClose()), this, SLOT(SltGroupChatWindowClose()));
+
+                //构建Json对象
+                QJsonObject json;
+                json.insert("id", cell->id);
+                json.insert("name", cell->name);
+
+               //获取最新用户状态
+                m_tcpSocket->SltSendMessage(GetMyGroups, json);
+
+                chatWindow->SetCell(cell, 1);
+                chatWindow->AddMessage(dataVal);
+                chatWindow->show();
+                //添加到当前聊天框
+                m_chatGroupWindows.append(chatWindow);
+                return;
+            }
+        }
     }
 }
 
-//托盘菜单
-void MainWindow::SltTrayIconMenuClicked(QAction *action){
-    if("退出" == action->text()){
-        this->hide();
-        QTimer::singleShot(500, this, SLOT(SltQuitAPP()));
-    }else if("显示主面板" == action->text()){
-        this->show();
-    }else if(!QString::compare("我在线上", action->text())){
-        m_tcpSocket->CheckConnected();
+void MainWindow::AddMyGroups(const QJsonValue &dataVal)
+{
+    // data 的 value 是数组
+    if (dataVal.isArray()) {
+        QJsonArray array = dataVal.toArray();
+        int nSize = array.size();
+        for (int i = 0; i < nSize; ++i) {
+            QJsonObject jsonObj = array.at(i).toObject();
 
-    }else if(!QString::compare("离线", action->text())){
-        m_tcpSocket->ColseConnected();
+            QQCell *cell = new QQCell;
+            cell->groupName = QString(tr("我的群组"));
+            cell->iconPath  = ":/resource/head/1.bmp";
+            cell->type      = QQCellType_Child;
+            cell->name      = jsonObj.value("name").toString();
+            cell->subTitle  = QString("我的群，我做主...");
+            cell->id        = jsonObj.value("id").toInt();;
+            cell->SetStatus(OnLine);
+
+            ui->groupListWidget->insertQQCell(cell);
+        }
     }
 }
 
-void MainWindow::SltQuitAPP()
+QString MainWindow::GetHeadPixmap(const QString &name)
 {
-    delete ui;
-    qApp->quit();
-}
-
-void MainWindow::SetSocket(ClientSocket *tcpSocket, const QString &name)
-{
-    if(tcpSocket != NULL){
-        m_tcpSocket = tcpSocket;
-
-        connect(m_tcpSocket,&ClientSocket::signalMessage, this, &MainWindow::SltTcpReply);
-        connect(m_tcpSocket,&ClientSocket::signalStatus, this, &MainWindow::SltTcpStatus);
-
-        ui->labelUserName->setText(name);
+    if (QFile::exists(MyApp::m_strHeadPath + name)) {
+        return MyApp::m_strHeadPath + name;
     }
+    return ":/resource/head/1.bmp";
 }
 
-void MainWindow::SltTcpReply(const quint8 &type, const QJsonValue &dataVal)
-{
-    switch (type) {
-        case AddFriend:      //服务器返回主动添加好友的用户消息
-            PraseAddFriendReply(dataVal);
-        break;
-        case AddFriendRequist:      //服务器返回主动添加好友的用户消息
-            PraseAddFriendRequistReply(dataVal);
-        break;
-    }
-}
 
-void MainWindow::SltTcpStatus(const quint8 &state)
-{
-
-}
-
-//关闭与好友聊天的窗口
-void MainWindow::SltFriendChatWindowClose()
-{
-
-}
-
-void MainWindow::on_btnWinMin_clicked()
-{
-    this->hide();
-}
-
-//好友点击
-void MainWindow::SltFriendsClicked(QQCell* cell)
-{
-    qDebug() << "双击" << endl;
-    ChatWindow *chatWindow = new ChatWindow();
-    connect(chatWindow, &ChatWindow::signalSendMessage, m_tcpSocket, &ClientSocket::SltSendMessage);
-    connect(chatWindow, &ChatWindow::signalClose, this, &MainWindow::SltFriendChatWindowClose);
-
-    //设置窗口属性
-    chatWindow->SetCell(cell);
-    chatWindow->show();
-}
-
-//群组点击
-void MainWindow::SltGroupsClicked(QQCell* cell)
-{
-
-}
 
