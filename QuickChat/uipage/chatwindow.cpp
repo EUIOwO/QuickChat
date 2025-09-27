@@ -70,6 +70,10 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(ui->widgetBubble, SIGNAL(signalDownloadFile(QString)), this, SLOT(SltDownloadFiles(QString)));
 
     ui->textEditMsg->setFocus();
+
+    m_faceDialog = new FaceDialog(this);
+    m_faceDialog->setModal(true);
+    m_faceDialog->hide();
 }
 
 ChatWindow::~ChatWindow()
@@ -125,9 +129,8 @@ void ChatWindow::AddMessage(const QJsonValue &json)
     if (json.isObject()) {
         QJsonObject dataObj = json.toObject();
         int type = dataObj.value("type").toInt();
-        QString strText = dataObj.value("msg").toString();
-        QString strHead = dataObj.value("head").toString();
 
+        QString strHead = dataObj.value("head").toString();
         // 如果有头像，则用自己的头像(群组消息的时候会附带头像图片)
         strHead = GetHeadPixmap(strHead);
 
@@ -136,7 +139,14 @@ void ChatWindow::AddMessage(const QJsonValue &json)
         itemInfo->SetDatetime(DATE_TIME);
         itemInfo->SetHeadPixmap(strHead.isEmpty() ? m_cell->iconPath : strHead);
         itemInfo->SetMsgType(type);
-        itemInfo->SetText(strText);
+
+        if(type == Text){
+            QString strText = dataObj.value("msg").toString();
+            itemInfo->SetText(strText);
+        } else if(type == Face){
+            int faceIndex = dataObj.value("face").toInt();
+            itemInfo->SetFace(faceIndex);
+        }
 
 
         // 加入聊天窗口
@@ -409,8 +419,50 @@ QString ChatWindow::GetHeadPixmap(const QString &name) const
     return ":/resource/head/1.bmp";
 }
 
+void ChatWindow::sendFaceMsg(int faceIndex)
+{
+    // 构建json数据
+    QJsonObject json;
+    json.insert("id", MyApp::m_nId);
+    json.insert("to", m_cell->id);
+    json.insert("face", faceIndex);
+    json.insert("type", Face);//表情消息
+
+    // 发送消息
+    Q_EMIT signalSendMessage(0 == m_nChatType ? SendMsg : SendGroupMsg, json);
+
+    // 构建气泡消息
+    ItemInfo *itemInfo = new ItemInfo();
+    itemInfo->SetName(MyApp::m_strUserName);
+    itemInfo->SetDatetime(DATE_TIME);
+    itemInfo->SetHeadPixmap(MyApp::m_strHeadFile);
+    itemInfo->SetFace(faceIndex);
+    itemInfo->SetOrientation(Right);
+    itemInfo->SetMsgType(Face); //设置表情消息
+
+    // 加入聊天界面
+    ui->widgetBubble->addItem(itemInfo);
+
+    //保存发送的消息
+    DataBaseMagr::Instance()->AddHistoryMsg(MyApp::m_nId, itemInfo);
+}
+
 // 插入表情
 void ChatWindow::on_toolButton_3_clicked()
 {
+    QPoint p = ui->toolButton_3->pos();
+    m_faceDialog->moveFaceLocation(p);
+    m_faceDialog->setSelectFaceIndex(0);
+    m_faceDialog->exec();
 
+    int selectFaceIndex = m_faceDialog->selectFaceIndex();
+    if(selectFaceIndex == 0){
+        //点击了关闭按钮
+        qDebug() << "点击了关闭按钮" << endl;
+
+    }else{
+        //点击了表情
+        qDebug() << "selectFaceIndex" << selectFaceIndex;
+        sendFaceMsg(selectFaceIndex);
+    }
 }

@@ -74,8 +74,8 @@ private:
     void PraseAddGroupRequest(const QJsonValue &dataVal);
     void PraseCreatGroupReply(const QJsonValue &dataVal);
     void PraseGetGroupFriendsReply(const QJsonValue &dataVal);
-    void ParseRefreshGroupFriendsReply(const QJsonValue &dataVal);
-    void ParseGroupMessageReply(const QJsonValue &dataVal);
+    void PraseRefreshGroupFriendsReply(const QJsonValue &dataVal);
+    void PraseGroupMessageReply(const QJsonValue &dataVal);
     void AddMyGroups(const QJsonValue &dataVal);
 
     QString GetHeadPixmap(const QString &name);

@@ -4,6 +4,7 @@
 #include "customwidget.h"
 #include "clientsocket.h"
 #include "qqcell.h"
+#include "face/facedialog.h"
 
 #include <QStandardItemModel>
 #include <QTime>
@@ -78,6 +79,9 @@ public slots:
 
 private:
     QString GetHeadPixmap(const QString &name) const;
+
+    FaceDialog *m_faceDialog;
+    void sendFaceMsg(int faceIndex);
 };
 
 #endif // CHATWINDOW_H

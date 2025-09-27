@@ -61,6 +61,16 @@ QString ItemInfo::GetStrPixmap() const {
     return m_strPixmap;
 }
 
+void ItemInfo::SetFace(int faceIndex)
+{
+    m_faceIndex = faceIndex;
+}
+
+int ItemInfo::GetFace() const
+{
+    return m_faceIndex;
+}
+
 
 void ItemInfo::SetText(const QString &text)
 {

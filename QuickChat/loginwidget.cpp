@@ -106,6 +106,9 @@ void LoginWidget::onSignalStatus(const quint8 &state)
             this->hide();
         }
         break;
+        case DisConnectedHost:
+        ui->labelWinTitle->setText("连接服务器失败");
+        break;
         case LoginPasswdError://用户未注册
             qDebug() << "用户未注册" << endl;
         break;

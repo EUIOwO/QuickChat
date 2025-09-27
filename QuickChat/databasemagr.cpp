@@ -199,7 +199,7 @@ bool DataBaseMagr::isInGroup(const QString &name){
 
 //用户添加群组
 void DataBaseMagr::AddGroup(const int &id, const int &userid, const QString &name){
-    QString strQuery = "selete [id] FROM MYGROUP";
+    QString strQuery = "SELETE [id] FROM MYGROUP";
     strQuery.append(" WHERE id=");
     strQuery.append(QString::number(id));
     strQuery.append(" AND userId=");
