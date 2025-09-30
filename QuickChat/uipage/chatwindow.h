@@ -46,6 +46,9 @@ private:
     QQCell *m_cell;
     QStandardItemModel *m_model;
 
+    //文件传输
+    ClientFileSocket *m_tcpFileSocket;
+
     // 文件传输
     QString          m_strFileName;
     QTime            m_updateTime;

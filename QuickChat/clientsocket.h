@@ -1,4 +1,4 @@
-#ifndef TCPCLIENT_H
+ #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
 #include <QObject>
@@ -51,6 +51,81 @@ private:
 private:
 
 
+};
+
+
+
+//文件传输类
+class ClientFileSocket : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ClientFileSocket(QObject *parent = 0);
+    ~ClientFileSocket();
+
+    bool isConneciton();
+
+    // 发送文件大小等信息
+    void StartTransferFile(QString fileReadName);
+
+    // 连接到服务器
+    void ConnectToServer(const QString &ip, const int &port, const int &usrId);
+    // 断开服务器
+    void CloseConnection();
+
+    // 文件传输完成
+    void FileTransFinished();
+
+    // 设置当前socket的id
+    void SetUserId(const int &id);
+signals:
+    void signalSendFinished();
+    void signamFileRecvOk(const quint8 &type, const QString &filePath);
+    void signalUpdateProgress(quint64 currSize, quint64 total);
+    void signalConnectd();
+private:
+    quint64         loadSize;   //每次发送数据的大小
+
+    /************* Receive file *******************/
+    quint64         bytesReceived;  //已收到数据的大小
+    quint64         fileNameSize;  //文件名的大小信息
+    QString         fileReadName;   //存放文件名
+    QByteArray      inBlock;   //数据缓冲区
+    quint64         ullRecvTotalBytes;  //数据总大小
+    QFile           *fileToRecv;  //要发送的文件
+
+    /************* Send file **********************/
+    quint16         blockSize;  //存放接收到的信息大小
+    QFile           *fileToSend;  //要发送的文件
+    quint64         ullSendTotalBytes;  //数据总大小
+    quint64         bytesWritten;  //已经发送数据大小
+    quint64         bytesToWrite;   //剩余数据大小
+    QByteArray      outBlock;  //数据缓冲区，即存放每次要发送的数据
+
+    // 用户目录
+    QString         m_strFilePath;
+
+    // 通信类
+    QTcpSocket      *m_tcpSocket;
+
+    bool            m_bBusy;
+    int             m_nWinId;
+    quint8          m_nType;
+private:
+    // socket 初始化
+    void InitSocket();
+public slots:
+
+private slots:
+    // 显示错误
+    void displayError(QAbstractSocket::SocketError);
+    // 发送文件数据，更新进度条
+    void SltUpdateClientProgress(qint64);
+
+    // 文件接收
+    void SltReadyRead();
+    void SltConnected();
+    void SltDisConnected();
 };
 
 
